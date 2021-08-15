@@ -1,0 +1,9 @@
+# python generated
+__pycache__/
+
+# keys and secrets
+keys/
+*rsa*
+
+# generated content
+generated/
