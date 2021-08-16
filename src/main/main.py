@@ -2,7 +2,7 @@ from datetime import datetime
 from time import sleep
 
 from gpiozero import RGBLED
-from main.utils.rgb_color import RgbColor
+from src.main.utils.rgb_color import RgbColor
 from src.main.utils.color_functions import ColorFunctions
 from src.main.utils.colors import Colors
 from src.main.utils.time_functions import TimeFunctions
@@ -33,9 +33,15 @@ def generateColorSteps():
 	COLOR_STEPS = ColorFunctions.interpolate_rgb_gradient(COLOR_STEPS, DURATION*60)
 
 def getColorForTime(time: datetime) -> RgbColor:
-	minute_of_day = TimeFunctions.minute_of_day(time)
-	offset = START_TIME*60
-	return COLOR_STEPS[minute_of_day-offset]
+	if TimeFunctions.within_range(time, START_TIME, START_TIME + DURATION):
+		minute_of_day = TimeFunctions.minute_of_day(time)
+		offset = START_TIME * 60
+		return COLOR_STEPS[minute_of_day - offset]
+	else:
+		return Colors.BLACK
+
+def getBrightnessForTime(time: datetime) -> float:
+	return TimeFunctions.cosine_interpolation(time, START_TIME, DURATION, MIN_BRIGHTNESS, MAX_BRIGHTNESS)
 
 def demo_single():
 	led.color = TEST.as_percents()
@@ -56,7 +62,7 @@ def demo_colors():
 def demo():
 	generateColorSteps()
 	for h in range(START_TIME,START_TIME+DURATION):
-		for m in range(0,60):
+		for m in range(0, 60):
 			now = datetime(2021, 8, 8, h, m, 0)
 			updateLED(now)
 			sleep(0.1)
@@ -69,12 +75,8 @@ def realtime():
 		sleep(60)
 
 def updateLED(now):
-	brightness = 0
-	color = Colors.BLACK
-	if TimeFunctions.within_range(now, START_TIME, START_TIME+DURATION):
-	# if (second_of_day-offset > 0 and second_of_day-offset < len(COLOR_STEPS)):
-		brightness = TimeFunctions.cosine_interpolation(now, START_TIME, DURATION, MIN_BRIGHTNESS, MAX_BRIGHTNESS)
-		color = getColorForTime(now).brightness(brightness)
+	brightness = getBrightnessForTime(now)
+	color = getColorForTime(now).brightness(brightness)
 	print(now, brightness, color.as_percents())
 	led.color = color.as_percents()
 
