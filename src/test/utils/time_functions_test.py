@@ -1,5 +1,5 @@
-from datetime import datetime
 import math
+from datetime import datetime
 
 from src.main.utils.time_functions import TimeFunctions
 from src.test.framework.annotations import skip, test
@@ -84,13 +84,13 @@ class TimeFunctionsTest(Test):
 		min2 = TimeFunctions.linear_interpolation(t_end, s, d, l, h)
 		hour24 = TimeFunctions.linear_interpolation(t_hour24, s, d, l, h)
 
-		assertThat(hour0).isEqualTo(0)
-		assertThat(min1).isEqualTo(0)
+		assertThat(hour0).isEqualTo(l)
+		assertThat(min1).isEqualTo(l)
 		assertThat(half1).isEqualTo(0.5)
-		assertThat(max).isEqualTo(1)
+		assertThat(max).isEqualTo(h)
 		assertThat(half2).isEqualTo(0.5)
-		assertThat(min2).isEqualTo(0)
-		assertThat(hour24).isEqualTo(0)
+		assertThat(min2).isEqualTo(l)
+		assertThat(hour24).isEqualTo(l)
 
 	@test
 	def testHalfSineInterpolation():
@@ -115,13 +115,13 @@ class TimeFunctionsTest(Test):
 		min2 = TimeFunctions.half_sine_interpolation(t_end, s, d, l, h)
 		hour24 = TimeFunctions.half_sine_interpolation(t_hour24, s, d, l, h)
 
-		assertThat(hour0).isEqualTo(0)
-		assertThat(min1).isEqualTo(0)
+		assertThat(hour0).isEqualTo(l)
+		assertThat(min1).isEqualTo(l)
 		assertThat(half1).isCloseTo(math.sqrt(2)/2, 1e-9)
-		assertThat(max).isEqualTo(1)
+		assertThat(max).isEqualTo(h)
 		assertThat(half2).isCloseTo(math.sqrt(2)/2, 1e-9)
-		assertThat(min2).isEqualTo(0)
-		assertThat(hour24).isEqualTo(0)
+		assertThat(min2).isEqualTo(l)
+		assertThat(hour24).isEqualTo(l)
 
 	@test
 	def testCosineInterpolation():
@@ -146,13 +146,13 @@ class TimeFunctionsTest(Test):
 		min2 = TimeFunctions.cosine_interpolation(t_end, s, d, l, h)
 		hour24 = TimeFunctions.cosine_interpolation(t_hour24, s, d, l, h)
 
-		assertThat(hour0).isEqualTo(0)
-		assertThat(min1).isEqualTo(0)
+		assertThat(hour0).isEqualTo(l)
+		assertThat(min1).isEqualTo(l)
 		assertThat(half1).isCloseTo(0.5, 1e-9)
-		assertThat(max).isEqualTo(1)
+		assertThat(max).isEqualTo(h)
 		assertThat(half2).isCloseTo(0.5, 1e-9)
-		assertThat(min2).isEqualTo(0)
-		assertThat(hour24).isEqualTo(0)
+		assertThat(min2).isEqualTo(l)
+		assertThat(hour24).isEqualTo(l)
 
 	@test
 	def testParabolicInterpolation():
@@ -177,10 +177,10 @@ class TimeFunctionsTest(Test):
 		min2 = TimeFunctions.parabolic_interpolation(t_end, s, d, l, h)
 		hour24 = TimeFunctions.parabolic_interpolation(t_hour24, s, d, l, h)
 
-		assertThat(hour0).isEqualTo(0)
-		assertThat(min1).isEqualTo(0)
+		assertThat(hour0).isEqualTo(l)
+		assertThat(min1).isEqualTo(l)
 		assertThat(half1).isEqualTo(0.75)
-		assertThat(max).isEqualTo(1)
+		assertThat(max).isEqualTo(h)
 		assertThat(half2).isEqualTo(0.75)
-		assertThat(min2).isEqualTo(0)
-		assertThat(hour24).isEqualTo(0)
+		assertThat(min2).isEqualTo(l)
+		assertThat(hour24).isEqualTo(l)
