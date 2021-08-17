@@ -11,6 +11,7 @@ class LightingGPIOConfig:
 @dataclass
 class LightingConfig:
 	ENABLED: bool
+	DEMO: bool
 	GPIO: LightingGPIOConfig
 	START_TIME: float
 	DURATION: float
