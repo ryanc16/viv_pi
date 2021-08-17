@@ -32,6 +32,12 @@ class Assertion:
 	def isFalse(self):
 		assert self.actual == False, f"Expected {self.actual} to be False"
 
+	def isNone(self):
+		assert self.actual == None, f"Expected {self.actual} to be None"
+
+	def isNotNone(self):
+		assert self.actual != None, f"Expected {self.actual} not to be None"
+
 	def hasLengthOf(self, expected: int):
 		assert len(self.actual) == expected, f"Expected iterable of length {len(self.actual)} to be of length {expected} in {str(self.actual)}"
 
