@@ -1,9 +1,10 @@
+from src.main.utils.colors import Colors
 from src.main.controllers.lighting.lighting_config import LightingConfig
 from src.main.controllers.lighting.lighting_controller import LightingController
 from src.main.controllers.lighting.natural_colors import NaturalColors
 from src.main.utils.time_functions import TimeFunctions
 from src.test.comparators.color_comparator import rgbColorComparator
-from src.test.framework.annotations import beforeEach, test
+from src.test.framework.annotations import beforeEach, focus, test
 from src.test.framework.assertions import assertThat
 
 lightingConfig = LightingConfig(
@@ -60,6 +61,26 @@ class LightingControllerTest:
     end_color = ctx.lightingController.getColorForTime(end_time)
     expected_end_color = lightingConfig.COLORS[len(lightingConfig.COLORS)-1]
     assertThat(end_color).whenComparedUsing(rgbColorComparator).isEqualTo(expected_end_color)
+
+  @test
+  def testGetColorForTimeOutsideRange(ctx):
+    expected_color = Colors.BLACK
+    
+    time1 = TimeFunctions.timeFromHours(0)
+    color1 = ctx.lightingController.getColorForTime(time1)
+    assertThat(color1).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+
+    time2 = TimeFunctions.timeFromHours(3)
+    color2 = ctx.lightingController.getColorForTime(time2)
+    assertThat(color2).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+
+    time3 = TimeFunctions.timeFromHours(21)
+    color3 = ctx.lightingController.getColorForTime(time3)
+    assertThat(color3).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+
+    time4 = TimeFunctions.timeFromHours(24)
+    color4 = ctx.lightingController.getColorForTime(time4)
+    assertThat(color4).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
 
   @test
   def testGetBrightnessForTime(ctx):
