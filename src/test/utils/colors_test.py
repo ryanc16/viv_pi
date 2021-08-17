@@ -2,10 +2,10 @@ from src.main.utils.colors import Colors
 from src.main.utils.rgb_color import RgbColor
 from src.test.framework.annotations import test
 from src.test.framework.assertions import assertThat
-from src.test.framework.test import Test
 
 
-class ColorsTest(Test):
+@test
+class ColorsTest:
 
 	@test
 	def testWhiteColor():

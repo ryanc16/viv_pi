@@ -4,25 +4,25 @@ import math
 from src.main.utils.clamp import clamp
 class TimeFunctions:
 
-	def second_of_day(time) -> float:
+	def secondOfDay(time) -> float:
 		return (time.hour * 3600) + (time.minute * 60) + time.second
 
-	def minute_of_day(time) -> float:
+	def minuteOfDay(time) -> float:
 		return (time.hour * 60) + time.minute
 
-	def time_from_hours(hrs: float) -> datetime:
+	def timeFromHours(hrs: float) -> datetime:
 		hr = math.floor(hrs)
 		hr = clamp(hr, 0, 23)
 		min = math.floor((hrs-hr)*60)
 		min = clamp(min, 0, 59)
 		sec = round((((hrs-hr)*60)-min)*60)
 		sec = clamp(sec, 0, 59)
-		return datetime.now().replace(hour=hr, minute=min, second=sec)
+		return datetime.now().replace(hour=hr, minute=min, second=sec, microsecond=0)
 
-	def within_range(time: datetime, start_time_hr: float, stop_time_hr: float) -> bool:
-		return time >= TimeFunctions.time_from_hours(start_time_hr) and time <= TimeFunctions.time_from_hours(stop_time_hr)
+	def isTimeWithinRange(time: datetime, start_time_hr: float, stop_time_hr: float) -> bool:
+		return time >= TimeFunctions.timeFromHours(start_time_hr) and time <= TimeFunctions.timeFromHours(stop_time_hr)
 
-	def linear_interpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
+	def linearInterpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
 		"""
 		Parameters
 		----------
@@ -50,14 +50,14 @@ class TimeFunctions:
 		d = duration * 3600 #1:24 increase/decrease the slope
 		l = min_brightness #0:1 raise up and down
 		h = max_brightness #0:1
-		x = TimeFunctions.second_of_day(time)
+		x = TimeFunctions.secondOfDay(time)
 		
 		if (x > s and x < (s + d)):
 			return h - abs(((h - l) * (d + (2 * s) - (2 * x))) / d)
 		else:
 			return min_brightness
 
-	def half_sine_interpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
+	def halfSineInterpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
 		"""
 		Parameters
 		----------
@@ -85,14 +85,14 @@ class TimeFunctions:
 		d = duration * 3600 #1:24 increase/decrease the frequency
 		l = min_brightness #0:1 raise up and down
 		h = max_brightness #0:1 increase/decrease the amplitude 
-		x = TimeFunctions.second_of_day(time)
+		x = TimeFunctions.secondOfDay(time)
 
 		if (x > s and x < (s + d)):
 			return (h - l) * math.sin((math.pi / d) * (x - s)) + l
 		else:
 			return min_brightness
 
-	def cosine_interpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
+	def cosineInterpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
 		"""
 		Parameters
 		----------
@@ -120,14 +120,14 @@ class TimeFunctions:
 		d = duration * 3600
 		l = min_brightness
 		h = max_brightness
-		x = TimeFunctions.second_of_day(time)
+		x = TimeFunctions.secondOfDay(time)
 
 		if (x > s and x < (s + d)):
 			return 0.5 * ((l - h) * math.cos((2 * math.pi * (s - x)) / d) + h + l)
 		else:
 			return min_brightness
 	
-	def parabolic_interpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
+	def parabolicInterpolation(time: datetime, start_time_hr: float, duration: float, min_brightness: float, max_brightness: float) -> float:
 		"""
 		Parameters
 		----------
@@ -155,7 +155,7 @@ class TimeFunctions:
 		d = duration * 3600
 		l = min_brightness
 		h = max_brightness
-		x = TimeFunctions.second_of_day(time)
+		x = TimeFunctions.secondOfDay(time)
 
 		if (x > s and x < (s + d)):
 			return h - ((h - l) * math.pow((d + (2 * s) - (2 * x)), 2)) / math.pow(d, 2)

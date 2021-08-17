@@ -18,7 +18,7 @@ class RgbColor:
 	def __str__(self):
 		return f"RgbColor({self.r}, {self.g}, {self.b})"
 
-	def as_percents(self) -> tuple:
+	def asPercents(self) -> tuple:
 		max = 255
 		scale = (max/255)
 		r = scale * self.r
@@ -45,14 +45,14 @@ class RgbColor:
 		return color
 
 	def lightness(self, percent: float):
-		rgb = self.as_percents()
+		rgb = self.asPercents()
 		hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
 		lightness = clamp(percent, 0, 1)
 		newrgb = colorsys.hls_to_rgb(hls[0], lightness, hls[2])
 		return RgbColor(tuple(255*x for x in newrgb))
 
 	def lighten(self, percentage: float):
-		rgb = self.as_percents()
+		rgb = self.asPercents()
 		hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
 		percent = clamp(percentage, 0, 1)
 		lightness = hls[1] + percent
@@ -61,7 +61,7 @@ class RgbColor:
 		return RgbColor(tuple(255*x for x in newrgb))
 
 	def darken(self, percentage: float):
-		rgb = self.as_percents()
+		rgb = self.asPercents()
 		hls = colorsys.rgb_to_hls(rgb[0], rgb[1], rgb[2])
 		percent = clamp(percentage, 0, 1)
 		lightness = hls[1] - percent
@@ -70,7 +70,7 @@ class RgbColor:
 		return RgbColor(tuple(255*x for x in newrgb))
 
 	def adjust_brightness(self, percentage:float):
-		rgb = self.as_percents()
+		rgb = self.asPercents()
 		hsv = colorsys.rgb_to_hsv(rgb[0], rgb[1], rgb[2])
 		percent = clamp(percentage, -1, 1)
 		brightness = hsv[2] + percent
@@ -78,8 +78,8 @@ class RgbColor:
 		newrgb = colorsys.hsv_to_rgb(hsv[0], hsv[1], brightness)
 		return RgbColor(tuple(255*x for x in newrgb))
 
-	def brightness(self, percent: float):
-		rgb = self.as_percents()
+	def setBrightness(self, percent: float):
+		rgb = self.asPercents()
 		hsv = colorsys.rgb_to_hsv(rgb[0], rgb[1], rgb[2])
 		value = clamp(percent, 0, 1)
 		newrgb = colorsys.hsv_to_rgb(hsv[0], hsv[1], value)

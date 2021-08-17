@@ -1,12 +1,11 @@
 from src.main.utils.colors import Colors
 from src.main.utils.rgb_color import RgbColor
-from src.test.comparators.color_comparator import colorTupleComparator
+from src.test.comparators.color_comparator import colorTupleComparator, rgbColorComparator
 from src.test.framework.annotations import test
 from src.test.framework.assertions import assertThat
-from src.test.framework.test import Test
 
-
-class RgbColorTest(Test):
+@test
+class RgbColorTest:
 
 	@test
 	def testAsRgb():
@@ -20,7 +19,7 @@ class RgbColorTest(Test):
 	@test
 	def testAsPercents():
 		color = RgbColor(127, 85, 255)
-		percents = color.as_percents()
+		percents = color.asPercents()
 		assertThat(percents).isTypeOf(tuple)
 		assertThat(percents[0]).isEqualTo(127/255)
 		assertThat(percents[1]).isEqualTo(85/255)
@@ -35,17 +34,17 @@ class RgbColorTest(Test):
 
 	@test
 	def testColorBrightness10Percent():
-		result = Colors.WHITE.brightness(0.1)
+		result = Colors.WHITE.setBrightness(0.1)
 		assertThat(result.as_rgb()).isEqualTo((25.5, 25.5, 25.5))
 
 	@test
 	def testColorBrightness50Percent():
-		result = Colors.WHITE.brightness(0.5)
+		result = Colors.WHITE.setBrightness(0.5)
 		assertThat(result.as_rgb()).isEqualTo((127.5, 127.5, 127.5))
 
 	@test
 	def testColorBrightness90Percent():
-		result = Colors.WHITE.brightness(0.9)
+		result = Colors.WHITE.setBrightness(0.9)
 		assertThat(result.as_rgb()).isEqualTo((229.5, 229.5, 229.5))
 
 	@test
@@ -72,5 +71,5 @@ class RgbColorTest(Test):
 
 	@test
 	def testColorLightnessEquality():
-		assertThat(Colors.RED.lightness(0.75).as_rgb()).whenComparedUsing(colorTupleComparator).isEqualTo(Colors.RED.lighten(0.25).as_rgb())
-		assertThat(Colors.RED.lightness(0.40).as_rgb()).whenComparedUsing(colorTupleComparator).isEqualTo(Colors.RED.darken(0.10).as_rgb())
+		assertThat(Colors.RED.lightness(0.75)).whenComparedUsing(rgbColorComparator).isEqualTo(Colors.RED.lighten(0.25))
+		assertThat(Colors.RED.lightness(0.40)).whenComparedUsing(rgbColorComparator).isEqualTo(Colors.RED.darken(0.10))
