@@ -8,7 +8,8 @@ def initializeTestModule(module: str):
 	TestRunner.scanned[module] = {
 		'beforeAll': None,
 		'beforeEach': None,
-		'tests': {}
+		'tests': {},
+		'focus': False
 	}
 
 def test(methodOrClass: FunctionType):
@@ -21,14 +22,13 @@ def test(methodOrClass: FunctionType):
 	if inspect.isclass(methodOrClass):
 		clazz = methodOrClass
 		TestRunner.tests[clazz] = TestRunner.scanned[name]
-		return
-	method = methodOrClass
-	if name not in TestRunner.scanned:
-		initializeTestModule(name)
-	if method not in TestRunner.scanned[name]['tests']:
-		TestRunner.scanned[name]['tests'][method] = {'skip': False}
 	else:
-		TestRunner.scanned[name]['tests'][method]['skip'] = False
+		method = methodOrClass
+		if name not in TestRunner.scanned:
+			initializeTestModule(name)
+		if method not in TestRunner.scanned[name]['tests']:
+			TestRunner.scanned[name]['tests'][method] = {'skip': False, 'focus': False}
+	return methodOrClass
 
 def skip(methodOrClass: FunctionType):
 	"""
@@ -42,14 +42,33 @@ def skip(methodOrClass: FunctionType):
 		for test in TestRunner.scanned[name]['tests']:
 			TestRunner.scanned[name]['tests'][test]['skip'] = True
 		TestRunner.tests[clazz] = TestRunner.scanned[name]
-		return
-	method = methodOrClass
-	if name not in TestRunner.scanned:
-		initializeTestModule(name)
-	if method not in TestRunner.scanned[name]['tests']:
-		TestRunner.scanned[name]['tests'][method] = {'skip': True}
 	else:
-		TestRunner.scanned[name]['tests'][method]['skip'] = True
+		method = methodOrClass
+		if name not in TestRunner.scanned:
+			initializeTestModule(name)
+		if method not in TestRunner.scanned[name]['tests']:
+			TestRunner.scanned[name]['tests'][method] = {'skip': True, 'focus': False}
+		else:
+			TestRunner.scanned[name]['tests'][method]['skip'] = True
+	return methodOrClass
+
+def focus(methodOrClass: FunctionType):
+	if methodOrClass == None:
+		return
+	name = methodOrClass.__module__
+	if inspect.isclass(methodOrClass):
+		clazz = methodOrClass
+		TestRunner.scanned[name]['focus'] = True
+		TestRunner.tests[clazz] = TestRunner.scanned[name]
+	else:
+		method = methodOrClass
+		if name not in TestRunner.scanned:
+			initializeTestModule(name)
+		if method not in TestRunner.scanned[name]['tests']:
+			TestRunner.scanned[name]['tests'][method] = {'skip': False, 'focus': True}
+		else:
+			TestRunner.scanned[name]['tests'][method]['focus'] = True
+	return methodOrClass
 
 def beforeAll(method: FunctionType):
 	"""

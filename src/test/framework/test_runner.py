@@ -35,8 +35,25 @@ class TestRunner:
 		print("Starting tests")
 		if self.config.verbosity != "SUMMARY":
 			print("")
-		start = datetime.now()
+		focused_suites = {}
+		focus_skipped = 0
 		for suite in self.tests:
+			suite_meta = TestRunner.tests[suite]
+			if suite_meta['focus'] == True:
+				print(f"!!! {suite.__name__} is a focused test suite")
+				focused_suites[suite] = suite_meta
+			elif any(list(map(lambda x: suite_meta['tests'][x]['focus'] == True, suite_meta['tests']))):
+				print(f"!!! {suite.__name__} contains focused tests")
+				focused_suites[suite] = suite_meta
+			else:
+				focus_skipped += len(suite_meta['tests'])
+		if len(focused_suites.keys()) == 0:
+			focused_suites = self.tests
+		else:
+			self.total += focus_skipped
+			self.skipped += focus_skipped
+		start = datetime.now()
+		for suite in focused_suites:
 			results = self.runSuite(suite)
 			self.total += results[0]
 			self.success += results[1]
@@ -55,7 +72,7 @@ class TestRunner:
 			print(f"Starting: {suite.__name__}")
 		suite_meta = TestRunner.tests[suite]
 		tests = suite_meta['tests']
-		total = len(tests.keys())
+		total = 0
 		success = 0
 		fail = 0
 		skipped = 0
@@ -63,7 +80,19 @@ class TestRunner:
 		ctx = TestContext()
 		if suite_meta['beforeAll'] is not None:
 			suite_meta['beforeAll'](ctx)
-		for test in tests.keys():
+		focused_tests = {}
+		focus_skipped = 0
+		for test in tests:
+			if tests[test]['focus'] == True:
+				focused_tests[test] = tests[test]
+			else:
+				focus_skipped+=1
+		if len(focused_tests.keys()) == 0:
+			focused_tests = tests
+		else:
+			total += focus_skipped
+			skipped = focus_skipped
+		for test in focused_tests.keys():
 			if suite_meta['beforeEach'] is not None:
 				suite_meta['beforeEach'](ctx)
 			result = self.runOne(suite, test, ctx)
@@ -73,6 +102,7 @@ class TestRunner:
 				skipped+=1
 			else:
 				fail+=1
+			total+=1
 		if self.config.verbosity != "SUMMARY":
 			print(f"{total} Total, {success} Pass, {fail} Fail, {skipped} Skipped. ({percent(success/((total-skipped)+1e-9))})")
 		if self.config.verbosity == "VERBOSE":
