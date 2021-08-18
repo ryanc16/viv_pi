@@ -1,11 +1,12 @@
-from src.main.utils.colors import Colors
 from src.main.controllers.lighting.lighting_config import LightingConfig
 from src.main.controllers.lighting.lighting_controller import LightingController
 from src.main.controllers.lighting.natural_colors import NaturalColors
+from src.main.utils.colors import Colors
 from src.main.utils.time_functions import TimeFunctions
 from src.test.comparators.color_comparator import rgbColorComparator
-from src.test.framework.annotations import beforeEach, focus, test
+from src.test.framework.annotations import beforeEach, test
 from src.test.framework.assertions import assertThat
+from src.test.framework.mocks import assertMock, mock
 
 lightingConfig = LightingConfig(
   GPIO=None,
@@ -33,6 +34,7 @@ class LightingControllerTest:
   @beforeEach
   def setUp(ctx):
     ctx.lightingController = LightingController(lightingConfig)
+    print("beforeEach")
 
   @test
   def testInitialization(ctx):
@@ -52,35 +54,50 @@ class LightingControllerTest:
 
   @test
   def testGetColorForTime(ctx):
+    timeFnMock = mock(TimeFunctions, 'isTimeWithinRange')
+    timeFnMock.thenReturn(True)
+
     start_time = TimeFunctions.timeFromHours(lightingConfig.START_TIME)
     start_color = ctx.lightingController.getColorForTime(start_time)
     expected_start_color = lightingConfig.COLORS[0]
     assertThat(start_color).whenComparedUsing(rgbColorComparator).isEqualTo(expected_start_color)
+    assertMock(timeFnMock).toHaveBeenCalledTimes(1)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((start_time, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
 
-    end_time = TimeFunctions.timeFromHours(lightingConfig.START_TIME+lightingConfig.DURATION)
+    end_time = TimeFunctions.timeFromHours(lightingConfig.START_TIME + lightingConfig.DURATION)
     end_color = ctx.lightingController.getColorForTime(end_time)
     expected_end_color = lightingConfig.COLORS[len(lightingConfig.COLORS)-1]
     assertThat(end_color).whenComparedUsing(rgbColorComparator).isEqualTo(expected_end_color)
+    assertMock(timeFnMock).toHaveBeenCalledTimes(2)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((end_time, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
 
   @test
   def testGetColorForTimeOutsideRange(ctx):
+    timeFnMock = mock(TimeFunctions, 'isTimeWithinRange')
+    timeFnMock.thenReturn(False)
     expected_color = Colors.BLACK
-    
+
     time1 = TimeFunctions.timeFromHours(0)
     color1 = ctx.lightingController.getColorForTime(time1)
     assertThat(color1).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((time1, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
 
     time2 = TimeFunctions.timeFromHours(3)
     color2 = ctx.lightingController.getColorForTime(time2)
     assertThat(color2).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((time2, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
 
     time3 = TimeFunctions.timeFromHours(21)
     color3 = ctx.lightingController.getColorForTime(time3)
     assertThat(color3).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((time3, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
 
     time4 = TimeFunctions.timeFromHours(24)
     color4 = ctx.lightingController.getColorForTime(time4)
     assertThat(color4).whenComparedUsing(rgbColorComparator).isEqualTo(expected_color)
+    assertMock(timeFnMock).toHaveLastBeenCalledWith((time4, lightingConfig.START_TIME, lightingConfig.START_TIME + lightingConfig.DURATION))
+
+    assertMock(timeFnMock).toHaveBeenCalledTimes(4)
 
   @test
   def testGetBrightnessForTime(ctx):
