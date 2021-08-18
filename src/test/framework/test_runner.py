@@ -14,10 +14,11 @@ from src.test.framework.test_context import TestContext
 @dataclass
 class TestRunnerConfig:
 	fileGlob: str
-	verbosity: str
+	verbosity: str = "INFO"
 class TestRunner:
 	scanned = {}
 	tests = {}
+	mocks = []
 	def __init__(self, config: TestRunnerConfig):
 		self.config = config
 		self._scanTests()
@@ -77,9 +78,6 @@ class TestRunner:
 		fail = 0
 		skipped = 0
 		percent = lambda x: "{:3.2f}".format(x*100)+"%"
-		ctx = TestContext()
-		if suite_meta['beforeAll'] is not None:
-			suite_meta['beforeAll'](ctx)
 		focused_tests = {}
 		focus_skipped = 0
 		for test in tests:
@@ -92,9 +90,11 @@ class TestRunner:
 		else:
 			total += focus_skipped
 			skipped = focus_skipped
+		ctx = TestContext()
+		self._beforeAll()
+		if suite_meta['beforeAll'] is not None:
+			suite_meta['beforeAll'](ctx)
 		for test in focused_tests.keys():
-			if suite_meta['beforeEach'] is not None:
-				suite_meta['beforeEach'](ctx)
 			result = self.runOne(suite, test, ctx)
 			if result == True:
 				success+=1
@@ -103,6 +103,9 @@ class TestRunner:
 			else:
 				fail+=1
 			total+=1
+		if suite_meta['afterAll'] is not None:
+			suite_meta['afterAll'](ctx)
+		self._afterAll()
 		if self.config.verbosity != "SUMMARY":
 			print(f"{total} Total, {success} Pass, {fail} Fail, {skipped} Skipped. ({percent(success/((total-skipped)+1e-9))})")
 		if self.config.verbosity == "VERBOSE":
@@ -117,6 +120,11 @@ class TestRunner:
 			if self.config.verbosity == "VERBOSE":
 				print(f"  {test_name}", "SKIP")
 			return None
+		suite_meta = TestRunner.tests[suite]
+		self._beforeEach()
+		if suite_meta['beforeEach'] is not None:
+				suite_meta['beforeEach'](ctx)
+		result = None
 		try:
 			if 'ctx' in inspect.getargspec(test).args:
 				pre_ctx = ctx.__dict__.copy()
@@ -127,12 +135,27 @@ class TestRunner:
 				test()
 			if self.config.verbosity == "VERBOSE":
 				print(f"  {test_name}", "PASS")
-			return True
+			result = True
 		except Exception as reason:
 			if self.config.verbosity == "VERBOSE":			
 				print(f"  {test_name}", "FAIL")
 			traceback.print_exception(reason, reason, reason.__traceback__)
-			return False
+			result = False
+		if suite_meta['afterEach'] is not None:
+			suite_meta['afterEach'](ctx)
+		self._afterEach()
+		return result
+
+	def _beforeAll(self):
+		pass
+	def _beforeEach(self):
+		pass
+	def _afterEach(self):
+		for mock in TestRunner.mocks:
+			mock.restore()
+		TestRunner.mocks = []
+	def _afterAll(self):
+		pass
 
 	def _scanTests(self):
 		if self.config.verbosity == "VERBOSE":
