@@ -8,6 +8,8 @@ def initializeTestModule(module: str):
 	TestRunner.scanned[module] = {
 		'beforeAll': None,
 		'beforeEach': None,
+		'afterEach': None,
+		'afterAll': None,
 		'tests': {},
 		'focus': False
 	}
@@ -91,3 +93,25 @@ def beforeEach(method: FunctionType):
 	if moduleName not in TestRunner.scanned:
 		initializeTestModule(moduleName)
 	TestRunner.scanned[moduleName]['beforeEach'] = method
+
+def afterEach(method: FunctionType):
+	"""
+	Mark a function in a test suite to be ran after each test has ran
+	"""
+	if method == None:
+		return
+	moduleName = method.__module__
+	if moduleName not in TestRunner.scanned:
+		initializeTestModule(moduleName)
+	TestRunner.scanned[moduleName]['afterEach'] = method
+
+def afterAll(method: FunctionType):
+	"""
+	Mark a function in a test suite to be ran last after all tests have ran
+	"""
+	if method == None:
+		return
+	moduleName = method.__module__
+	if moduleName not in TestRunner.scanned:
+		initializeTestModule(moduleName)
+	TestRunner.scanned[moduleName]['afterAll'] = method
