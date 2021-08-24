@@ -1,6 +1,6 @@
+from __future__ import annotations
 import math
-from types import FunctionType
-from typing import Iterable, Type
+from typing import Callable, Iterable, Type
 
 
 class Assertion:
@@ -51,7 +51,7 @@ class Assertion:
 		for i in range(len(expected)):
 			assert expected[i] in self.actual, f"Expected {[str(item) for item in self.actual]} to contain {str(expected[i])}"
 
-	def each(self, expected, assertion_fn: FunctionType):
+	def each(self, assertion_fn: Callable[[Assertion, int], bool]):
 		itr = None
 		try:
 				itr = iter(self.actual)
@@ -60,8 +60,8 @@ class Assertion:
 		if itr is not None:
 			count=0
 			for element in itr:
-					assertion_fn(expected[count], assertThat(self.actual[count]))
-					count+=1
+				assertion_fn(assertThat(self.actual[count]), count)
+				count+=1
 
 def assertThat(actual):
 	return Assertion(actual)
