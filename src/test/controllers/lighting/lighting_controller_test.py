@@ -1,3 +1,5 @@
+from src.main.utils.rgb_color import RgbColor
+from src.main.utils.color_functions import ColorFunctions
 from src.main.controllers.lighting.lighting_config import LightingConfig
 from src.main.controllers.lighting.lighting_controller import LightingController
 from src.main.controllers.lighting.natural_colors import NaturalColors
@@ -6,7 +8,7 @@ from src.main.utils.time_functions import TimeFunctions
 from src.test.comparators.color_comparator import rgbColorComparator
 from src.test.framework.annotations import beforeEach, test
 from src.test.framework.assertions import assertThat
-from src.test.framework.mocks import assertMock, mock
+from src.test.framework.mocks import Mock, assertMock, mock
 
 lightingConfig = LightingConfig(
   GPIO=None,
@@ -33,8 +35,8 @@ class LightingControllerTest:
 
   @beforeEach
   def setUp(ctx):
+    ctx.ColorFunctionsMock = mock(ColorFunctions)
     ctx.lightingController = LightingController(lightingConfig)
-    print("beforeEach")
 
   @test
   def testInitialization(ctx):
@@ -48,9 +50,11 @@ class LightingControllerTest:
 
   @test
   def testGenerateColorSteps(ctx):
-    color_steps = ctx.lightingController.generateColorSteps()
+    ctx.ColorFunctionsMock.reset()
+    ctx.lightingController.generateColorSteps()
     expected_length = lightingConfig.DURATION * 60
-    assertThat(color_steps).hasLengthOf(expected_length)
+    assertMock(ctx.ColorFunctionsMock.interpolateRgbGradient).toHaveBeenCalledTimes(1)
+    assertMock(ctx.ColorFunctionsMock.interpolateRgbGradient).toHaveBeenCalledWith((lightingConfig.COLORS, expected_length))
 
   @test
   def testGetColorForTime(ctx):
