@@ -87,7 +87,7 @@ class LightingController:
 			while True:
 				color = colors[counter%len(colors)]
 				color_percent = color.asPercents()
-				print(color.as_rgb(), color_percent)
+				print(color.asRgb(), color_percent)
 				self.led.color = color_percent
 				counter+=1
 				sleep(1)

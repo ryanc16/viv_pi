@@ -12,4 +12,4 @@ def colorTupleComparator(actual: Tuple, expected: Tuple) -> bool:
   return True
 
 def rgbColorComparator(actual: RgbColor, expected: RgbColor) -> bool:
-  return colorTupleComparator(actual.as_rgb(), expected.as_rgb())
+  return colorTupleComparator(actual.asRgb(), expected.asRgb())

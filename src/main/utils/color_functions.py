@@ -5,8 +5,8 @@ from src.main.utils.rgb_color import RgbColor
 class ColorFunctions:
 
 	def blendColors(start_colour: RgbColor, end_colour: RgbColor, blend_percentage: float) -> RgbColor:
-		start_colour = start_colour.as_rgb()
-		end_colour = end_colour.as_rgb()
+		start_colour = start_colour.asRgb()
+		end_colour = end_colour.asRgb()
 		blended_color = [0, 0, 0]
 		for i in range(len(blended_color)):
 			diff = end_colour[i] - start_colour[i]
@@ -21,8 +21,8 @@ class ColorFunctions:
 		"""
 		Take two RGB color sets and mix them over a specified number of steps.  Return the list
 		"""
-		startcolor = startcolor.as_rgb()
-		goalcolor = goalcolor.as_rgb()
+		startcolor = startcolor.asRgb()
+		goalcolor = goalcolor.asRgb()
 		# white
 
 		R = startcolor[0]

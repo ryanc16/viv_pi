@@ -26,10 +26,10 @@ class RgbColor:
 		b = scale * self.b
 		return (r/255, g/255, b/255)
 	
-	def as_rgb(self) -> tuple:
+	def asRgb(self) -> tuple:
 		return (self.r, self.g, self.b)
 
-	def as_hex(self) -> str:
+	def asHex(self) -> str:
 		hR = str.replace(hex(self.r), "0x", "")
 		hG = str.replace(hex(self.g), "0x", "")
 		hB = str.replace(hex(self.b), "0x", "")
