@@ -4,6 +4,7 @@ from typing import List
 
 from src.main.controllers.controller import Controller
 from src.main.system_config import ControllerConfig, SystemConfig
+from src.main.services.input_reporting_service import InputReportingService
 
 class Main:
 
@@ -29,7 +30,12 @@ class Main:
     print("viv-pi stopped at", datetime.now())
 
   def onUpdate(self):
-    pass
+    ids = ["temp", "hum"]
+    values = InputReportingService.instance().checkAll(ids)
+    out = []
+    for i in range(len(values)):
+      out.append(f"{ids[i]}: {values[i]}")
+    print(str.join(", ", out), end="\r")
 
   def _startController(self, ctrlConfig: ControllerConfig):
     if ctrlConfig.config.ENABLED:
