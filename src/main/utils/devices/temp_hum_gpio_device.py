@@ -1,9 +1,10 @@
 from typing import List
-from src.main.utils.devices.DHT import DHT11Result
+import threading
+
+from src.main.utils.devices.dht11 import DHT11Result
 from src.main.utils.devices.gpio_device import GpioDevice
 from src.main.utils.stats import Stats, within_weighted_std
 from src.main.utils.data import Data
-import threading
 
 class TempHumGpioDevice(GpioDevice):
 
@@ -19,9 +20,7 @@ class TempHumGpioDevice(GpioDevice):
     self.temperature = None
     self.humidity = None
     self.thread = None
-    # if importlib_util.find_spec('RPI.GPIO'):
-    # print("RPI lib found")
-    from src.main.utils.devices.DHT import DHT11
+    from src.main.utils.devices.dht11 import DHT11
     self.sensor = DHT11(self.pins)
 
   def start(self):
