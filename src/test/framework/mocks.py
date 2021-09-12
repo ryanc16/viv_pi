@@ -37,7 +37,11 @@ class MockFn(BaseMockFn):
     return self._invoke(*args)
 
   def thenDo(self, fn):
-    self._mockAction = lambda *args: fn.__call__()
+    self._mockAction = fn.__call__
+    return self
+
+  def thenCallOriginal(self):
+    self._mockAction = self._original_method
     return self
 
   def thenReturn(self, value):
