@@ -1,4 +1,3 @@
-from src.main.utils.rgb_color import RgbColor
 from src.main.utils.color_functions import ColorFunctions
 from src.main.controllers.lighting.lighting_config import LightingConfig
 from src.main.controllers.lighting.lighting_controller import LightingController
@@ -6,14 +5,14 @@ from src.main.controllers.lighting.natural_colors import NaturalColors
 from src.main.utils.colors import Colors
 from src.main.utils.time_functions import TimeFunctions
 from src.test.comparators.color_comparator import rgbColorComparator
-from src.test.framework.annotations import beforeEach, test
+from src.test.framework.annotations import beforeEach, focus, test
 from src.test.framework.assertions import assertThat
-from src.test.framework.mocks import Mock, assertMock, mock
+from src.test.framework.mocks import Mock, assertMock, mock, mockMethod
 
 lightingConfig = LightingConfig(
-  GPIO=None,
   ENABLED=False,
   DEMO=False,
+  GPIO=None,
   START_TIME=6,
   DURATION=14,
   MIN_BRIGHTNESS=0,
@@ -36,6 +35,7 @@ class LightingControllerTest:
   @beforeEach
   def setUp(ctx):
     ctx.ColorFunctionsMock = mock(ColorFunctions)
+    ctx.ColorFunctionsMock.interpolateRgbGradient.thenReturn([NaturalColors.DAWN, NaturalColors.NIGHT])
     ctx.lightingController = LightingController(lightingConfig)
 
   @test
@@ -58,7 +58,7 @@ class LightingControllerTest:
 
   @test
   def testGetColorForTime(ctx):
-    timeFnMock = mock(TimeFunctions, 'isTimeWithinRange')
+    timeFnMock = mockMethod(TimeFunctions, 'isTimeWithinRange')
     timeFnMock.thenReturn(True)
 
     start_time = TimeFunctions.timeFromHours(lightingConfig.START_TIME)
@@ -77,7 +77,7 @@ class LightingControllerTest:
 
   @test
   def testGetColorForTimeOutsideRange(ctx):
-    timeFnMock = mock(TimeFunctions, 'isTimeWithinRange')
+    timeFnMock = mockMethod(TimeFunctions, 'isTimeWithinRange')
     timeFnMock.thenReturn(False)
     expected_color = Colors.BLACK
 
