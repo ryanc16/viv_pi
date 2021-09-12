@@ -1,7 +1,12 @@
 from dataclasses import dataclass
+from typing import Dict, List
+from src.main.controllers.controller import Controller
 
-from src.main.controllers.lighting.lighting_config import LightingConfig
 
 @dataclass
+class ControllerConfig:
+	type: Controller
+	config: object
+@dataclass
 class SystemConfig:
-	lighting: LightingConfig
+	controllers: List[ControllerConfig]
