@@ -1,7 +1,8 @@
 from datetime import datetime
 from importlib import util as importlib_util
-from time import sleep
+import threading
 
+from src.main.controllers.controller import Controller
 from src.main.controllers.lighting.lighting_config import LightingConfig
 from src.main.controllers.lighting.natural_colors import NaturalColors
 from src.main.utils.clamp import clamp
@@ -11,7 +12,7 @@ from src.main.utils.rgb_color import RgbColor
 from src.main.utils.time_functions import TimeFunctions
 
 
-class LightingController:
+class LightingController(Controller):
 	
 	def __init__(self, lightingConfig: LightingConfig):
 		self.lightingConfig = lightingConfig
@@ -25,13 +26,16 @@ class LightingController:
 
 	def start(self):
 		self.enabled = True
+		self.exit = threading.Event()
 		if self.lightingConfig.DEMO == True:
-			self.demo()
+			self.thread = threading.Thread(target=self.demo)
 		else:
-			self.realtime()
+			self.thread = threading.Thread(target=self.realtime)
+		self.thread.start()
 
 	def stop(self):
 		self.enabled = False
+		self.exit.set()
 		if self.led != None:
 			self.led.off()
 
@@ -44,7 +48,7 @@ class LightingController:
 			minute_of_day = TimeFunctions.minuteOfDay(time)
 			offset = (self.start_time * 60) + 1
 			idx = minute_of_day - offset
-			idx = clamp(idx, 0, len(self.color_steps))
+			idx = clamp(idx, 0, len(self.color_steps)-1)
 			return self.color_steps[idx]
 		else:
 			return Colors.BLACK
@@ -61,10 +65,10 @@ class LightingController:
 			self.led.color = color.asPercents()
 
 	def realtime(self):
-		while self.enabled:
+		while not self.exit.is_set():
 			now = datetime.now()
 			self.updateLED(now)
-			sleep(60)
+			self.exit.wait(60)
 
 	def demo(self):
 		self._demoTimeRange()
@@ -73,7 +77,7 @@ class LightingController:
 		self.led = None
 		if importlib_util.find_spec('gpiozero') is not None:
 			from gpiozero import RGBLED
-			self.led = RGBLED(self.lightingConfig.GPIO.R, self.lightingConfig.GPIO.G, self.lightingConfig.GPIO.B, False)
+			self.led = RGBLED(self.lightingConfig.GPIO.pins[0], self.lightingConfig.GPIO.pins[1], self.lightingConfig.GPIO.pins[2], False)
 			self.led.off()
 
 	def _demoSingleColor(self):
@@ -84,17 +88,18 @@ class LightingController:
 		if self.led != None:
 			colors = [NaturalColors.EVENING, NaturalColors.LATE_EVENING, NaturalColors.DUSK, NaturalColors.NIGHT]
 			counter = 0
-			while True:
+			while not self.exit.is_set():
 				color = colors[counter%len(colors)]
 				color_percent = color.asPercents()
 				print(color.asRgb(), color_percent)
 				self.led.color = color_percent
 				counter+=1
-				sleep(1)
+				self.exit.wait(1)
 
 	def _demoTimeRange(self):
 		for h in range(self.start_time, self.start_time + self.duration):
 			for m in range(0, 60):
-				now = datetime(2021, 8, 8, h, m, 0)
-				self.updateLED(now)
-				sleep(0.1)
+				if not self.exit.is_set():
+					now = datetime(2021, 8, 8, h, m, 0)
+					self.updateLED(now)
+					self.exit.wait(0.1)
