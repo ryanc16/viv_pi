@@ -1,6 +1,6 @@
 from src.main.controllers.controller import Controller
 from src.main.controllers.humidity.humidity_config import HumidityConfig
-from time import sleep
+from src.main.services.input_reporting_service import InputReportingService
 import threading
 
 
@@ -28,7 +28,7 @@ class HumidityController(Controller):
     self.sensor.start()
     while not self.exit.is_set():
       if self.sensor.humidity is not None:
-        print(f"{round(self.sensor.humidity, 1)} %")
+        InputReportingService.instance().report("hum", f"{round(self.sensor.humidity, 1)} %")
       self.exit.wait(5)
     self.sensor.stop()
 

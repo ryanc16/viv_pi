@@ -1,6 +1,7 @@
 from src.main.controllers.controller import Controller
 from src.main.utils.conversions import Conversions
 from src.main.controllers.temperature.temperature_config import TemperatureConfig
+from src.main.services.input_reporting_service import InputReportingService
 import threading
 
 
@@ -29,9 +30,9 @@ class TemperatureController(Controller):
     while not self.exit.is_set():
       if self.sensor.temperature is not None:
         if self.temperatureConfig.SCALE == "F":
-          print(f"{round(Conversions.CtoF(self.sensor.temperature), 1)} F")
+          InputReportingService.instance().report("temp", f"{round(Conversions.CtoF(self.sensor.temperature), 1)} F")
         else:
-          print(f"{self.sensor.temperature} C")
+          InputReportingService.instance().report("temp", f"{self.sensor.temperature} C")
       self.exit.wait(5)
     self.sensor.stop()
 
