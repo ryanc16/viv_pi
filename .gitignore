@@ -1,3 +1,6 @@
+# python virtual environment
+.venv/
+
 # python generated
 __pycache__/
 
