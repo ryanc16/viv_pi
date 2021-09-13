@@ -1,4 +1,6 @@
 from typing import Dict
+from src.main.controllers.audio.audio_config import AudioConfig
+from src.main.controllers.audio.audio_controller import AudioController
 from src.main.controllers.lighting.lighting_controller import LightingController
 from src.main.controllers.temperature.temperature_controller import TemperatureController
 from src.main.controllers.humidity.humidity_controller import HumidityController
@@ -60,6 +62,15 @@ SYSTEM_CONFIG: SystemConfig = SystemConfig(
         GPIO=GPIO['temp/hum'],
         MIN_HUMIDITY=40,
         MAX_HUMIDITY=70
+      )
+    ),
+    ControllerConfig(
+      type=AudioController,
+      config=AudioConfig(
+        ENABLED=True,
+        DEMO=True,
+        VOLUME=80,
+        MEDIA="~/media/"
       )
     )
   ]
