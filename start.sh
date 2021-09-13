@@ -1,2 +1,2 @@
 #!/bin/bash
-python start.py
+source .venv/bin/activate && python start.py
