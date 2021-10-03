@@ -1,5 +1,9 @@
+# IDE files
+.vscode/settings.json
+
 # python virtual environment
-.venv/
+.venv/*
+!.venv/.gitkeep
 
 # python generated
 __pycache__/
@@ -10,3 +14,7 @@ keys/
 
 # generated content
 generated/
+Pipfile.lock
+dist/
+build/
+*.egg-info
