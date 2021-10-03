@@ -16,9 +16,10 @@ verify_ssl = true
 python_version = "3.7"
 
 [scripts]
-push = "bash scripts/push.sh"
-pull = "bash scripts/pull.sh -- "
-setup = "chmod +x scripts/*.sh && bash scripts/install.sh"
+install = "chmod +x scripts/*.sh && bash scripts/install.sh"
 start = "bash scripts/start.sh"
-test = "bash scripts/test.sh"
-build = "python setup.py sdist bdist_wheel"
+"dev:setup" = "bash scripts/dev-setup.sh"
+"dev:test" = "bash scripts/test.sh"
+"dev:build" = "python setup.py sdist bdist_wheel"
+"dev:push" = "bash scripts/push.sh"
+"dev:pull" = "bash scripts/pull.sh -- "
