@@ -1,9 +1,9 @@
 import sys
-from src.test.framework.test_runner import TestRunner, TestRunnerConfig
+from assert4py.test_runner import TestRunner, TestRunnerConfig
 
 if __name__ == "__main__":
 	config: TestRunnerConfig = TestRunnerConfig(
-		fileGlob = "src/test/**/*_test.py",
+		fileGlob = "tests/**/*_test.py",
 		verbosity="SUMMARY" # SUMMARY, INFO, VERBOSE
 	)
 	result = TestRunner(config).run()

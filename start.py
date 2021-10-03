@@ -1,8 +1,7 @@
-from src.main.main import Main
-from importlib import import_module
+from vivpi.main import Main
+import config
 
-config_module = import_module('config')
-app = Main(config_module.SYSTEM_CONFIG)
+app = Main(config.SYSTEM_CONFIG)
 try:
   app.onStart()
 except KeyboardInterrupt:
