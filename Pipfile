@@ -18,7 +18,6 @@ python_version = "3.7"
 [scripts]
 install = "chmod +x scripts/*.sh && bash scripts/install.sh"
 start = "bash scripts/start.sh"
-"dev:setup" = "bash scripts/dev-setup.sh"
 "dev:test" = "bash scripts/test.sh"
 "dev:build" = "python setup.py sdist bdist_wheel"
 "dev:push" = "bash scripts/push.sh"
