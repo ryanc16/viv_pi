@@ -18,3 +18,7 @@ Pipfile.lock
 dist/
 build/
 *.egg-info
+## unit test coverage
+.coverage
+htmlcov/
+coverage.json

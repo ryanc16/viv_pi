@@ -5,11 +5,12 @@ verify_ssl = true
 
 [packages]
 "python-vlc" = "==3.0.12118"
-"rpi.gpio" = {version = "==0.7.0",markers = "sys_platform == 'linux' or sys_platform == 'linux2'"}
+"rpi.gpio" = {version = "==0.7.0",markers = "sys_platform == 'rasberrypi'"}
 
 [dev-packages]
 "setuptools" = "==58.1.0"
-assert4py = {editable = true,git = "https://github.com/ryanc16/assert4py.git"}
+assert4py = {git = "https://github.com/ryanc16/assert4py.git"}
+coverage = "6.0.2"
 
 [requires]
 python_version = "3.7"
