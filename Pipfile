@@ -9,16 +9,16 @@ verify_ssl = true
 
 [dev-packages]
 "setuptools" = "==58.1.0"
-assert4py = {git = "https://github.com/ryanc16/assert4py.git"}
-coverage = "6.0.2"
+"assert4py" = {git = "https://github.com/ryanc16/assert4py.git"}
+"coverage" = "6.0.2"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
-push = "bash push.sh"
-pull = "bash pull.sh -- "
-setup = "chmod +x *.sh && bash install.sh"
-start = "bash start.sh"
-test = "bash test.sh"
+push = "bash scripts/push.sh"
+pull = "bash scripts/pull.sh -- "
+setup = "chmod +x scripts/*.sh && bash scripts/install.sh"
+start = "bash scripts/start.sh"
+test = "bash scripts/test.sh"
 build = "python setup.py sdist bdist_wheel"
