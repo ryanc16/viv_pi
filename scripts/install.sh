@@ -1,4 +1,6 @@
 #!/bin/bash
+root=$(git rev-parse --show-toplevel)
+cd $root
 
 echo "OS: $OSTYPE"
 if [[ "$OSTYPE" != "win32" && "$OSTYPE" != "msys" && "$OSTYPE" != "cygwin" ]]; then
