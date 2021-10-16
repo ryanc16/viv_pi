@@ -1,17 +1,17 @@
 from typing import Dict
-from src.main.controllers.audio.audio_config import AudioConfig
-from src.main.controllers.audio.audio_controller import AudioController
-from src.main.controllers.lighting.lighting_controller import LightingController
-from src.main.controllers.temperature.temperature_controller import TemperatureController
-from src.main.controllers.humidity.humidity_controller import HumidityController
-from src.main.controllers.humidity.humidity_config import HumidityConfig
-from src.main.controllers.temperature.temperature_config import TemperatureConfig
-from src.main.utils.devices.gpio_device import GpioDevice
-from src.main.utils.devices.rgb_gpio_device import RgbGpioDevice
-from src.main.utils.devices.temp_hum_gpio_device import TempHumGpioDevice
-from src.main.system_config import ControllerConfig, SystemConfig
-from src.main.controllers.lighting.lighting_config import LightingConfig
-from src.main.controllers.lighting.natural_colors import NaturalColors
+from vivpi.controllers.audio.audio_config import AudioConfig
+from vivpi.controllers.audio.audio_controller import AudioController
+from vivpi.controllers.lighting.lighting_controller import LightingController
+from vivpi.controllers.temperature.temperature_controller import TemperatureController
+from vivpi.controllers.humidity.humidity_controller import HumidityController
+from vivpi.controllers.humidity.humidity_config import HumidityConfig
+from vivpi.controllers.temperature.temperature_config import TemperatureConfig
+from vivpi.utils.devices.gpio_device import GpioDevice
+from vivpi.utils.devices.rgb_gpio_device import RgbGpioDevice
+from vivpi.utils.devices.temp_hum_gpio_device import TempHumGpioDevice
+from vivpi.system_config import ControllerConfig, SystemConfig
+from vivpi.controllers.lighting.lighting_config import LightingConfig
+from vivpi.controllers.lighting.natural_colors import NaturalColors
 
 
 GPIO: Dict[str, GpioDevice] = {
@@ -24,7 +24,7 @@ SYSTEM_CONFIG: SystemConfig = SystemConfig(
     ControllerConfig(
       type = LightingController,
       config = LightingConfig(
-        ENABLED=False,
+        ENABLED=True,
         DEMO=False,
         GPIO=GPIO['rgb'],
         START_TIME=6,
