@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "vivpi"
+version = "0.1.0-alpha"
+description = "A vivarium monitoring and controller application for the Raspberry Pi"
+authors = ["ryanc16"]
+license = "MIT"
+packages = [
+    {include = "vivpi"}
+]
+include = [
+    "packages.txt",
+    "start.py",
+    "config.py",
+    ".env",
+    "scripts/start.sh",
+    "scripts/install.sh",
+    "pyproject.toml",
+    "poetry.toml",
+    ".venv/.gitkeep"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+python-vlc = "3.0.12118"
+"RPi.GPIO" = {version = "0.7.0", markers = "sys_platform == 'rasberrypi'"}
+
+[tool.poetry.dev-dependencies]
+assert4py = {git = "https://github.com/ryanc16/assert4py.git"}
+coverage = "6.0.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

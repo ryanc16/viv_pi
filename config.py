@@ -24,7 +24,7 @@ SYSTEM_CONFIG: SystemConfig = SystemConfig(
     ControllerConfig(
       type = LightingController,
       config = LightingConfig(
-        ENABLED=False,
+        ENABLED=True,
         DEMO=False,
         GPIO=GPIO['rgb'],
         START_TIME=6,

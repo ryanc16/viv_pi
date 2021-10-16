@@ -1,7 +1,4 @@
 #!/bin/bash
-root=$(git rev-parse --show-toplevel)
-cd $root
-
 echo "starting install"
 echo "installing linux packages"
 if [[ $(command -v apt) ]]; then
@@ -32,10 +29,9 @@ if [[ ! $(command -v pyenv) ]]; then
   pyenv --version
 fi
 
-if [[ ! $(command -v pipenv) ]]; then
-  echo "pipenv not installed"
-  pipx install pipenv
-  pipenv --version
+if [[ ! $(command -v poetry) ]]; then
+  echo "poetry not installed"
+  pipx install poetry && poetry --version
 fi
 
 if [[ ! -d .venv/ ]]; then
@@ -44,5 +40,5 @@ if [[ ! -d .venv/ ]]; then
   touch .venv/.gitkeep
 fi
 echo "installing application dependencies"
-pipenv install
+poetry install --no-dev --no-root
 echo "install complete"

@@ -1,7 +1,0 @@
-include packages.txt
-include .venv/.gitkeep
-include Pipfile
-include start.sh
-include start.py
-include config.py
-include install.sh
