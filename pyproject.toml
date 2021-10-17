@@ -19,12 +19,13 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.7,<3.9"
 python-vlc = "3.0.12118"
 # markers needs to be removed to be installed on the pi,
 # but this prevents this from attempting to be installed on 
 # development machine and causing the whole install to fail.
 "RPi.GPIO" = {version = "0.7.0", markers = "sys_platform == 'none'"}
+gpiozero = {version = "1.6.2", markers = "sys_platform == 'none'"}
 
 [tool.poetry.dev-dependencies]
 assert4py = {git = "https://github.com/ryanc16/assert4py.git"}
