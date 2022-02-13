@@ -6,7 +6,7 @@ from vivpi.controllers.controller import Controller
 from vivpi.system_config import ControllerConfig, SystemConfig
 from vivpi.services.input_reporting_service import InputReportingService
 
-class Main:
+class App:
 
   def __init__(self, systemConfig: SystemConfig):
     self.systemConfig = systemConfig

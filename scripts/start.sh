@@ -1,2 +1,3 @@
 #!/bin/bash
-.venv/bin/python start.py
+cd "$(dirname $0)/.."
+.venv/bin/python -m vivpi
