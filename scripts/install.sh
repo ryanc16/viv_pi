@@ -34,11 +34,6 @@ if [[ ! $(command -v poetry) ]]; then
   pipx install poetry && poetry --version
 fi
 
-if [[ ! -d .venv/ ]]; then
-  echo "create local venv"
-  mkdir .venv
-  touch .venv/.gitkeep
-fi
 echo "installing application dependencies"
-poetry install --no-dev --no-root
+poetry install -E pi --no-dev --no-root
 echo "install complete"
